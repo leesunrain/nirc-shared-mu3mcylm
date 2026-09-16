@@ -13,7 +13,7 @@
   <header>
     <div class="eyebrow">NIRC RUNNING TOOL</div>
     <h1>풀마라톤 예상 기록</h1>
-    <div class="version">v1.0</div>
+    <div class="version">v1.2</div>
     <p>1000m · 5km · 10km 기록 하나로 풀마라톤 기록을 계산합니다.</p>
   </header>
 
@@ -68,6 +68,22 @@
         <small>VDOT + 나의 공식 단순 평균</small>
       </article>
     </div>
+
+    <div class="card caution">
+      <div class="caution-title">초보 · 장거리 훈련 부족자</div>
+      <div class="caution-main">예상 기록보다 <b>약 +5분</b> 여유 있게</div>
+      <div id="safeTarget" class="safe-target">--:--:-- · --:--/km</div>
+      <div class="caution-sub">풀코스 +5분 ≈ km당 약 +7초</div>
+    </div>
+
+    <details class="card pace-details">
+      <summary>
+        <span>풀코스 전체 페이스표</span>
+        <span class="open-hint">눌러서 전체 보기</span>
+      </summary>
+      <div class="pace-note">2026 동아마라톤 페이스표의 가감 패턴 적용 · 1~5km +4초 / 6~10km +2초 / 11~30km 기준 / 31~41km +1초 / 42km -2초 / 마지막 195m -1초 기준</div>
+      <div id="paceTable" class="pace-table"></div>
+    </details>
 
     <details class="card formula">
       <summary>나의 공식 계산 구조 보기</summary>

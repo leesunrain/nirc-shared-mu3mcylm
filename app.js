@@ -27,6 +27,41 @@ function myFormula(ten){
   let full=half*2+(sex==='female'?600:780);
   return {half,full,addHalf};
 }
+
+function racePaceTable(baseFull){
+  const base=baseFull/42.195;
+  let cum=0, rows=[];
+  for(let km=1;km<=42;km++){
+    let adj=km<=5?4:km<=10?2:km<=30?0:km<=41?1:-2;
+    let sec=base+adj; cum+=sec;
+    rows.push({label:`${km}K`,sec,cum,mark:km%5===0});
+  }
+  // Uploaded sheet uses a final 0.2 km row; display it as the actual finish segment (195m).
+  let lastPace=base-1, lastSec=lastPace*0.195; cum+=lastSec;
+  rows.push({label:'FIN',sec:lastPace,cum,finish:true});
+  return rows;
+}
+function renderPaceTable(baseFull){
+  const rows=racePaceTable(baseFull);
+  let prev5Cum=0;
+  $('paceTable').innerHTML='<div class="pace-head"><span>거리</span><span>목표 페이스</span><span style="text-align:right">누적</span></div>'+
+    rows.map(r=>{
+      let split='';
+      const kmNum=parseInt(r.label,10);
+      if(!r.finish && kmNum%5===0){
+        const lap5=r.cum-prev5Cum;
+        prev5Cum=r.cum;
+        split=`<div class="five-split"><span>${kmNum-4}~${kmNum}K · 5K 랩</span><b>${fmt(lap5)}</b></div>`;
+      }
+      return `<div class="pace-block">
+        <div class="pace-row ${r.mark?'mark':''} ${r.finish?'finish':''}">
+          <span class="pace-km">${r.label}</span>
+          <span class="pace-big">${pace(r.sec,1)}/km</span>
+          <span class="pace-cum">${fmt(r.cum)}</span>
+        </div>${split}
+      </div>`;
+    }).join('');
+}
 $('calc').onclick=()=>{
   let h=+$('hh').value||0,m=+$('mm').value||0,s=+$('ss').value||0;
   let input=h*3600+m*60+s;
@@ -51,6 +86,9 @@ $('calc').onclick=()=>{
   $('myPace').textContent=`${pace(my.full,42.195)}/km`;
   $('avgTime').textContent=fmt(avg);
   $('avgPace').textContent=`${pace(avg,42.195)}/km`;
+  let safe=avg+300;
+  $('safeTarget').textContent=`${fmt(safe)} · ${pace(safe,42.195)}/km`;
+  renderPaceTable(avg);
 
   let first = dist===1000
     ? `1000m → 10km: 1000m 페이스 + ${sex==='male'?'40':'30'}초/km = 10km ${fmt(ten)}`
